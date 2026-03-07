@@ -1,0 +1,5 @@
+com/example/tempcontrol/TemperatureServiceInterface.class
+com/example/tempcontrol/TemperatureService$TemperatureData.class
+com/example/tempcontrol/TemperatureService.class
+com/example/tempcontrol/TempControlApplication.class
+com/example/tempcontrol/TemperatureController.class

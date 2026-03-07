@@ -1,0 +1,80 @@
+package services
+
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"time"
+)
+
+// TemperatureService handles fetching temperature data from external API
+type GatesService struct {
+	BaseURL    string
+	HTTPClient *http.Client
+}
+
+// TemperatureResponse represents the response from the temperature API
+type GatesResponse struct {
+	Value       float64   `json:"value"`
+	Unit        string    `json:"unit"`
+	Timestamp   time.Time `json:"timestamp"`
+	Gate        string    `json:"gate"`
+	Status      string    `json:"status"`
+	SensorID    string    `json:"sensor_id"`
+	SensorType  string    `json:"sensor_type"`
+	Description string    `json:"description"`
+}
+
+// NewTemperatureService creates a new temperature service
+func NewGatesService(baseURL string) *GatesService {
+	return &GatesService{
+		BaseURL: baseURL,
+		HTTPClient: &http.Client{
+			Timeout: 10 * time.Second,
+		},
+	}
+}
+
+// GetTemperature fetches temperature data for a specific location
+func (s *GatesService) GetTemperature(location string) (*GatesResponse, error) {
+	url := fmt.Sprintf("%s/gates?{%s}", s.BaseURL, location)
+
+	resp, err := s.HTTPClient.Get(url)
+	if err != nil {
+		return nil, fmt.Errorf("error fetching temperature data: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	}
+
+	var temperatureResp GatesResponse
+	if err := json.NewDecoder(resp.Body).Decode(&temperatureResp); err != nil {
+		return nil, fmt.Errorf("error decoding temperature response: %w", err)
+	}
+
+	return &temperatureResp, nil
+}
+
+// GetTemperatureByID fetches temperature data for a specific sensor ID
+func (s *GatesService) GetTemperatureByID(sensorID string) (*GatesResponse, error) {
+	url := fmt.Sprintf("%s/gates", s.BaseURL)
+
+	resp, err := s.HTTPClient.Get(url)
+	if err != nil {
+		return nil, fmt.Errorf("error fetching temperature data: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	}
+
+	var temperatureResp GatesResponse
+	if err := json.NewDecoder(resp.Body).Decode(&temperatureResp); err != nil {
+		return nil, fmt.Errorf("error decoding temperature response: %w", err)
+	}
+
+	return &temperatureResp, nil
+}

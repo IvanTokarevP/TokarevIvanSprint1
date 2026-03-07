@@ -1,0 +1,47 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(users, "Пользователи")
+
+System_Boundary(smart_home, "Умный дом") {
+    Container(UI, "Frontend", "React", "Интерфейс пользователя")
+    Container(gateway, "API Gateway", "Spring Cloud Gateway", "Единая точка входа для микросервисов")
+    
+    Container(light, "Light Service", "Управление освещением")
+    Container(gate, "Gate Service",  "Управление воротами")
+    Container(surveillance, "Surveillance Service", "Наблюдение за домом")
+    Container(temp, "Temperature Service", "Мониторинг температуры")
+    Container(heating, "Heating Service", "Управление отоплением")
+    
+    ContainerDb(db, "Database", "PostgreSQL", "Хранит данные всех микросервисов")
+}
+
+
+System_Ext(light_system, "Система освещения", "Датчики и исполнительные механизмы")
+System_Ext(gate_system, "Система ворот", "Датчики и исполнительные механизмы")
+System_Ext(surveillance_system, "Система наблюдения", "Камеры, датчики")
+System_Ext(temp_system, "Система температуры", "Датчики")
+System_Ext(heating_system, "Система отопления", "Датчики и исполнительные механизмы")
+
+Rel(users, UI, "Управляют, мониторят", "HTTPS")
+Rel(UI, gateway, "Вызывает API", "JSON/HTTPS")
+
+Rel(gateway, light, "Маршрутизирует запросы", "HTTP")
+Rel(gateway, gate, "Маршрутизирует запросы", "HTTP")
+Rel(gateway, surveillance, "Маршрутизирует запросы", "HTTP")
+Rel(gateway, temp, "Маршрутизирует запросы", "HTTP")
+Rel(gateway, heating, "Маршрутизирует запросы", "HTTP")
+
+Rel(light, db, "Читает/пишет", "SQL")
+Rel(gate, db, "Читает/пишет", "SQL")
+Rel(surveillance, db, "Читает/пишет", "SQL")
+Rel(temp, db, "Читает/пишет", "SQL")
+Rel(heating, db, "Читает/пишет", "SQL")
+
+Rel(light, light_system, "Управляет и мониторит", "API")
+Rel(gate, gate_system, "Управляет и мониторит", "API")
+Rel(surveillance, surveillance_system, "Управляет и мониторит", "API")
+Rel(temp, temp_system, "Управляет и мониторит", "API")
+Rel(heating, heating_system, "Управляет и мониторит", "API")
+
+@enduml
