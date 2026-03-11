@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: smarthome-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: smarthome
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./smart_home/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - smarthome-network
+    restart: unless-stopped
+
+  temperature-api:
+    build:
+      context: ./temperature-api
+      dockerfile: Dockerfile
+    container_name: temperature-api
+    ports:
+      - "8081:8081"   #  доступ с хоста
+    environment:
+      - SERVER_PORT=8081
+    networks:
+      - smarthome-network
+    restart: unless-stopped
+  
+  gates:
+    build:
+      context: ./gates        # путь к папке с Dockerfile и кодом
+      dockerfile: Dockerfile
+    container_name: gates
+    expose:
+      - "8080"                  # порт внутри сети Docker
+    ports:
+     - "8083:8080"            # раскомментируйте, если нужен доступ с хоста (например, через localhost:8083)
+    networks:
+      - smarthome-network
+    restart: unless-stopped
+
+  surveillance:
+    build:
+      context: ./surveillance
+      dockerfile: Dockerfile
+    container_name: surveillance
+    expose:
+      - "8080"
+    ports:
+      - "8082:8080"
+    restart: unless-stopped
+    networks:
+      - smarthome-network    
+
+  app:
+    build:
+      context: ./smart_home
+      dockerfile: Dockerfile
+    container_name: smarthome-app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      temperature-api:
+        condition: service_started
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/smarthome
+      - TEMPERATURE_API_URL=http://temperature-api:8081
+      - GATE_API_URL=http://gates:8080
+      - SURV_API_URL=http://surveillance:8080      
+    ports:  
+      - "8080:8080"
+    restart: unless-stopped
+    networks:
+      - smarthome-network
+
+volumes:
+  postgres_data:
+
+networks:
+  smarthome-network:
+    driver: bridge

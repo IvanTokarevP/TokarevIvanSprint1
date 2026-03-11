@@ -1,0 +1,102 @@
+@startuml
+entity User {
+  *user_id : int <<generated>>
+  --
+  *name : varchar
+  *email : varchar
+  password_hash : varchar
+  created_at : timestamp
+}
+
+entity User_Home {
+  *user_home_id : int <<generated>>
+  --
+  *home_id : int <<FK>>
+  *user_id : int <<FK>>
+}
+
+entity Home {
+  *home_id : int <<generated>>
+  --
+  *name : varchar
+  address : varchar
+}
+
+entity Room {
+  *room_id : int <<generated>>
+  --
+  *home_id : int <<FK>>
+  *name : varchar
+}
+
+entity Light {
+  *light_id : int <<generated>>
+  --
+  *room_id : int <<FK>>
+  *name : varchar
+  status : boolean
+  brightness : int
+  color : varchar
+}
+
+entity Gate {
+  *gate_id : int <<generated>>
+  --
+  *home_id : int <<FK>>
+  *name : varchar
+  status : boolean
+}
+
+entity Surveillance {
+  *surveillance_id : int <<generated>>
+  --
+  *room_id : int <<FK>>
+  *name : varchar
+  status : boolean
+  url : varchar
+}
+
+entity TemperatureSensor {
+  *sensor_id : int <<generated>>
+  --
+  *room_id : int <<FK>>
+  *name : varchar
+  location : varchar
+  current_temp : float
+}
+
+entity Heater {
+  *heater_id : int <<generated>>
+  --
+  *room_id : int <<FK>>
+  *name : varchar
+  status : boolean
+  target_temp : float
+}
+
+entity Event {
+  *event_id : int <<generated>>
+  --
+  *user_id : int <<FK>>
+  *device_type : varchar   ' например: 'light', 'gate', 'camera', 'sensor', 'heater'
+  *device_id : int
+  *event_type : varchar    ' включение, выключение, срабатывание датчика и т.п.
+  *timestamp : timestamp
+  data : jsonb             ' дополнительные параметры события
+}
+
+' ----- Отношения -----
+User ||--o{ User_Home
+User ||--o{ Event 
+
+Home ||--o{ User_Home
+Home ||--o{ Room
+Home ||--o{ Gate 
+
+Room ||--o{ Light 
+Room ||--o{ Surveillance 
+Room ||--o{ TemperatureSensor
+Room ||--o{ Heater
+
+
+@enduml

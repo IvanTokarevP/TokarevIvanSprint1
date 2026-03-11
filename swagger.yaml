@@ -1,0 +1,583 @@
+openapi: 3.0.0
+info:
+  title: Smart Home REST API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api
+    description: Локальный сервер разработки
+paths:
+  /lights:
+    get:
+      tags: [Lights]
+      summary: Посмотреть список всех светильников
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Light'
+    post:
+      tags: [Lights]
+      summary: Добавить новый светильник
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LightInput'
+      responses:
+        '201':
+          description: Светильник добавлен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Light'
+  /lights/{id}:
+    get:
+      tags: [Lights]
+      summary: Найти светильник по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Light'
+        '404':
+          description: Светильник не найден
+    put:
+      tags: [Lights]
+      summary: Включить/выключить светильник
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LightInput'
+      responses:
+        '200':
+          description: Обновлено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Light'
+        '404':
+          description: Светильник не найден
+    delete:
+      tags: [Lights]
+      summary: Удалить светильник
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Удалено успешно
+        '404':
+          description: Светильник не найден
+
+  /gates:
+    get:
+      tags: [Gates]
+      summary: Посмотреть список всех ворот
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Gate'
+    post:
+      tags: [Gates]
+      summary: Добавить новые ворота
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GateInput'
+      responses:
+        '201':
+          description: Ворота добавлены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Gate'
+  /gates/{id}:
+    get:
+      tags: [Gates]
+      summary: Найти ворота по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Gate'
+        '404':
+          description: Ворота не найдены
+    put:
+      tags: [Gates]
+      summary: Открыть/закрыть ворота
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GateInput'
+      responses:
+        '200':
+          description: Обновлено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Gate'
+        '404':
+          description: Ворота не найдены
+    delete:
+      tags: [Gates]
+      summary: Удалить ворота
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Удалено успешно
+        '404':
+          description: Ворота не найдены
+
+  /surveillance:
+    get:
+      tags: [Surveillance]
+      summary: Посмотреть список всех камер
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Camera'
+    post:
+      tags: [Surveillance]
+      summary: Добавить новую камеру
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CameraInput'
+      responses:
+        '201':
+          description: Камера добавлена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Camera'
+  /surveillance/{id}:
+    get:
+      tags: [Surveillance]
+      summary: Найти камеру по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Camera'
+        '404':
+          description: Камера не найдена
+
+    delete:
+      tags: [Surveillance]
+      summary: Удалить камеру
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Удалено успешно
+        '404':
+          description: Камера не найдена
+
+  /temperature-sensors:
+    get:
+      tags: [Temperature Sensors]
+      summary: Посмотреть список всех датчиков температуры
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TemperatureSensor'
+    post:
+      tags: [Temperature Sensors]
+      summary: Добавить новый датчик температуры
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TemperatureSensorInput'
+      responses:
+        '201':
+          description: Датчик создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemperatureSensor'
+  /temperature-sensors/{id}:
+    get:
+      tags: [Temperature Sensors]
+      summary: Найти датчик по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemperatureSensor'
+        '404':
+          description: Датчик не найден
+    
+    delete:
+      tags: [Temperature Sensors]
+      summary: Удалить датчик
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Удалено успешно
+        '404':
+          description: Датчик не найден
+
+  /heaters:
+    get:
+      tags: [Heaters]
+      summary: Посмотреть список всех обогревателей
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Heater'
+    post:
+      tags: [Heaters]
+      summary: Добавить новый обогреватель
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HeaterInput'
+      responses:
+        '201':
+          description: Обогреватель создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Heater'
+  /heaters/{id}:
+    get:
+      tags: [Heaters]
+      summary: Найти обогреватель по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Heater'
+        '404':
+          description: Обогреватель не найден
+    put:
+      tags: [Heaters]
+      summary: Включить/отключить обогреватель
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HeaterInput'
+      responses:
+        '200':
+          description: Обновлено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Heater'
+        '404':
+          description: Обогреватель не найден
+    delete:
+      tags: [Heaters]
+      summary: Удалить обогреватель
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Удалено успешно
+        '404':
+          description: Обогреватель не найден
+
+components:
+  schemas:
+    Light:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Лампа в спальне"
+        status:
+          type: boolean
+          example: true
+        brightness:
+          type: integer
+          minimum: 0
+          maximum: 100
+          example: 80
+        color:
+          type: string
+          example: "#FFFFFF"
+        roomId:
+          type: integer
+          nullable: true
+          example: 2
+    LightInput:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: "Лампа в спальне"
+        status:
+          type: boolean
+          default: false
+          example: true
+        brightness:
+          type: integer
+          minimum: 0
+          maximum: 100
+          default: 50
+          example: 80
+        color:
+          type: string
+          example: "#FFFFFF"
+        roomId:
+          type: integer
+          nullable: true
+          example: 2
+
+    Gate:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Главные ворота"
+        status:
+          type: boolean
+          example: false
+    GateInput:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: "Главные ворота"
+        status:
+          type: boolean
+          default: false
+          example: false
+
+    Camera:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Камера у входа"
+        status:
+          type: boolean
+          example: true
+        rtspUrl:
+          type: string
+          example: "rtsp://192.168.1.100/stream1"
+    CameraInput:
+      type: object
+      required:
+        - name
+        - rtspUrl
+      properties:
+        name:
+          type: string
+          example: "Камера у входа"
+        status:
+          type: boolean
+          default: true
+          example: true
+        rtspUrl:
+          type: string
+          example: "rtsp://192.168.1.100/stream1"
+
+    TemperatureSensor:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Датчик в гостиной"
+        location:
+          type: string
+          example: "Гостиная"
+        currentTemperature:
+          type: number
+          format: float
+          readOnly: true
+          example: 22.5
+        roomId:
+          type: integer
+          nullable: true
+          example: 1
+    TemperatureSensorInput:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: "Датчик в гостиной"
+        location:
+          type: string
+          example: "Гостиная"
+        roomId:
+          type: integer
+          nullable: true
+          example: 1
+
+    Heater:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Обогреватель в спальне"
+        status:
+          type: boolean
+          example: true
+        targetTemperature:
+          type: number
+          format: float
+          example: 23.0
+        roomId:
+          type: integer
+          nullable: true
+          example: 2
+    HeaterInput:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: "Обогреватель в спальне"
+        status:
+          type: boolean
+          default: false
+          example: true
+        targetTemperature:
+          type: number
+          format: float
+          example: 23.0
+        roomId:
+          type: integer
+          nullable: true
+          example: 2
