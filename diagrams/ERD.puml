@@ -8,10 +8,16 @@ entity User {
   created_at : timestamp
 }
 
+entity User_Home {
+  *user_home_id : int <<generated>>
+  --
+  *home_id : int <<FK>>
+  *user_id : int <<FK>>
+}
+
 entity Home {
   *home_id : int <<generated>>
   --
-  *user_id : int <<FK>>
   *name : varchar
   address : varchar
 }
@@ -80,9 +86,10 @@ entity Event {
 }
 
 ' ----- Отношения -----
-User ||--o{ Home
+User ||--o{ User_Home
 User ||--o{ Event 
 
+Home ||--o{ User_Home
 Home ||--o{ Room
 Home ||--o{ Gate 
 

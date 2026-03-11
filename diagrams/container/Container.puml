@@ -7,11 +7,11 @@ System_Boundary(smart_home, "Умный дом") {
     Container(UI, "Frontend", "React", "Интерфейс пользователя")
     Container(gateway, "API Gateway", "Spring Cloud Gateway", "Единая точка входа для микросервисов")
     
-    Container(light, "Light Service", "Управление освещением")
-    Container(gate, "Gate Service",  "Управление воротами")
-    Container(surveillance, "Surveillance Service", "Наблюдение за домом")
-    Container(temp, "Temperature Service", "Мониторинг температуры")
-    Container(heating, "Heating Service", "Управление отоплением")
+    Container(light, "Light Service", "Java + Spring Boot", "Управление освещением")
+    Container(gate, "Gate Service", "Java + Spring Boot",  "Управление воротами")
+    Container(surveillance, "Surveillance Service", "Java + Spring Boot", "Наблюдение за домом")
+    Container(temp, "Temperature Service", "Java + Spring Boot", "Мониторинг температуры")
+    Container(heating, "Heating Service", "Java + Spring Boot", "Управление отоплением")
     
     ContainerDb(db, "Database", "PostgreSQL", "Хранит данные всех микросервисов")
 }
